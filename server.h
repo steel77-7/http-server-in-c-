@@ -18,6 +18,6 @@ struct Server
     void (*launch)(struct Server server);
 };
 
-struct Server constructor(int domain, int protocol, unsigned long interface, int service, int backlog, int port);
+struct Server constructor(int domain, int protocol, unsigned long interface, int service, int backlog, int port,void (*launch)(struct Server server));
 
 #endif

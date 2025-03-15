@@ -1,8 +1,9 @@
 #include <stdlib.h>
-#include "server.h"
+#include "server.h" 
 
-struct Server constrcutor(int domain, int protocol, unsigned long interface, int service, int backlog, int port)
+struct Server constructor(int domain, int protocol, unsigned long interface, int service, int backlog, int port,void (*launch)(struct Server server))
 {
+
     struct Server server;
 
     server.domain = domain;
@@ -13,7 +14,7 @@ struct Server constrcutor(int domain, int protocol, unsigned long interface, int
     server.port = port;
 
     server.address.sin_addr.s_addr = htonl(interface);
-    server.address.sin_port = hton(port);
+    server.address.sin_port = htons(port);
     server.address.sin_family = domain;
 
     if ((server.socket = socket(server.domain, server.service, server.protocol)) < 0)
@@ -22,7 +23,7 @@ struct Server constrcutor(int domain, int protocol, unsigned long interface, int
         exit(1);
     }
 
-    if (bind(server.socket, (struct sockaddr_in *)&server.address, sizeof(server.address)) < 0)
+    if (bind(server.socket, (struct sockaddr *)&server.address, sizeof(server.address)) < 0)
     {
         perror("error in binding the socket");
         exit(1);
@@ -33,5 +34,8 @@ struct Server constrcutor(int domain, int protocol, unsigned long interface, int
         perror("failed to listen");
         exit(1);
     }
+
+
+    server.launch = launch;
     return server;
 }
